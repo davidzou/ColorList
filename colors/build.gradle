@@ -57,7 +57,7 @@ uploadArchives {
             pom.groupId = "com.wonderingwall.base"
             pom.artifactId = "color-names"
             pom.project {
-                description '1. 增加onError针对错误日志上报添加接口'
+                description '1. 添加Color命名'
             }
             // 提交至本地库
             switch (origin) {
