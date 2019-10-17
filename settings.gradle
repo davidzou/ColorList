@@ -1,0 +1,2 @@
+include ':app', ':colors'
+rootProject.name='ColorList'

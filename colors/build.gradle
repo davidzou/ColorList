@@ -1,0 +1,86 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    destinationDir = file('../docs/api')
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options {
+        failOnError false
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
+}
+
+def origin = System.getProperty("origin")?:"local"
+def version_name = "0.0.1"
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = "com.wonderingwall.base"
+            pom.artifactId = "color-names"
+            pom.project {
+                description '1. 增加onError针对错误日志上报添加接口'
+            }
+            // 提交至本地库
+            switch (origin) {
+                case "snapshot":
+                    // 提交至maven库
+                    pom.version = "${version_name}-SNAPSHOT"
+                    repository(url: "${nexusUrl}/content/repositories/snapshots") {
+                        authentication(userName: nexusUsername, password: nexusPassword)
+                    }
+                    break;
+                case "release":
+                    // 提交至maven库正式版本
+                    pom.version = "${version_name}"
+                    repository(url: "${nexusUrl}/content/repositories/releases"){
+                        authentication(userName:nexusUsername, password:nexusPassword)
+                    }
+                    break;
+                case "repo":
+                default:
+                    pom.version = "${version_name}-SNAPSHOT"
+                    repository(url: uri('repo'))
+                    break;
+            }
+        }
+    }
+}
