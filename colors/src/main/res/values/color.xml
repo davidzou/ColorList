@@ -240,7 +240,7 @@
     <color name="Eggplant">#614051</color>
     <color name="Eggshell">#f0ead6</color>
     <color name="EgyptianBlue">#1034a6</color>
-    <color name="ElectricBlue">#7d9ff</color>
+    <color name="ElectricBlue">#7df9ff</color>
     <color name="ElectricCrimson">#ff003f</color>
     <color name="ElectricCyan">#00ffff</color>
     <color name="ElectricGreen">#00ff00</color>
@@ -284,4 +284,16 @@
     <color name="FuchsiaPink">#ff77ff</color>
     <color name="Fulvous">#e48400</color>
     <color name="FuzzyWuzzy">#cc6666</color>
+    <color name="Gainsboro">#dcdcdc</color>
+    <color name="Gamboge">#e49b0f</color>
+    <color name="GhostWhite">#f8f8ff</color>
+    <color name="Ginger">#b06500</color>
+    <color name="Glaucous">#6082b6</color>
+    <color name="Glitter">#e6e8fa</color>
+    <color name="Gold">#ffd700</color>
+    <color name="GoldenBrown">#996515</color>
+    <color name="GoldenPoppy">#fcc200</color>
+    <color name="GoldenYellow">#ffdf00</color>
+    <color name="Goldenrod">#daa520</color>
+    <color name="GrannySmithApple">#a8e4a0</color>
 </resources>
