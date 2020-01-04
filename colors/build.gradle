@@ -28,10 +28,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
 
 task javadoc(type: Javadoc) {
@@ -48,6 +48,7 @@ task javadoc(type: Javadoc) {
     }
 }
 
+// You can invoke 'gradle -Dorigin=local uploadArchives
 def origin = System.getProperty("origin")?:"local"
 def version_name = "0.0.1"
 
@@ -67,19 +68,19 @@ uploadArchives {
                     repository(url: "${nexusUrl}/content/repositories/snapshots") {
                         authentication(userName: nexusUsername, password: nexusPassword)
                     }
-                    break;
+                    break
                 case "release":
                     // 提交至maven库正式版本
                     pom.version = "${version_name}"
                     repository(url: "${nexusUrl}/content/repositories/releases"){
                         authentication(userName:nexusUsername, password:nexusPassword)
                     }
-                    break;
+                    break
                 case "repo":
                 default:
                     pom.version = "${version_name}-SNAPSHOT"
                     repository(url: uri('repo'))
-                    break;
+                    break
             }
         }
     }
