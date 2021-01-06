@@ -5,6 +5,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        unselectedWidgetColor: Colors.white,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -26,9 +28,22 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+
+// 色块
+final List<ColorObject> colors = [
+  ColorObject(name: "红色", color: Colors.red),
+  ColorObject(name: "黄色", color: Colors.yellow),
+  ColorObject(name: "蓝色", color: Colors.blue),
+  ColorObject(name: "绿色", color: Colors.green),
+  ColorObject(name: "橙色", color: Colors.orange),
+  ColorObject(name: "橙色", color: Colors.pink),
+];
+
 class _MyHomePageState extends State<MyHomePage> {
+
+
 // 进度监听对象
-  final ValueNotifier<double> factor = ValueNotifier<double>(1 / 5);
+  final ValueNotifier<double> factor = ValueNotifier<double>(1 / colors.length);
 
 // 页数监听对象
   final ValueNotifier<int> page = ValueNotifier<int>(1);
@@ -36,37 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // 页面滑动控制器
   PageController _ctrl;
 
-// 测试组件 色块
-  final List<Widget> testWidgets =
-      // [Colors.red, Colors.yellow, Colors.blue, Colors.green, Colors.orange]
-      [
-    ColorObject(name: "红色", color: Colors.red),
-    ColorObject(name: "黄色", color: Colors.yellow),
-    ColorObject(name: "蓝色", color: Colors.blue),
-    ColorObject(name: "绿色", color: Colors.green),
-    ColorObject(name: "橙色", color: Colors.orange),
-  ]
-          .map(
-            (e) => Container(
-              decoration: BoxDecoration(
-                color: e.color,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  e.name,
-                  style: TextStyle(fontSize:30.0, color: Colors.white),
-                ),
-              ),
-            ),
-          )
-          .toList();
-
-  Color get startColor =>  Color(0xff00fa60);//Colors.red; // 起点颜色
-  Color get endColor => Color(0xff0575e6);//Colors.blue; // 终点颜色
-
+  Color get startColor => Color(0xff00fa60); //Colors.red; // 起点颜色
+  Color get endColor => Color(0xff0575e6); //Colors.blue; // 终点颜色
 
   //圆角装饰
   BoxDecoration get boxDecoration => const BoxDecoration(
@@ -81,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _ctrl = PageController(
       viewportFraction: 0.9,
     )..addListener(() {
-        double value = (_ctrl.page + 1) % 5 / 5;
+        double value = (_ctrl.page + 1) % colors.length / colors.length;
         factor.value = value == 0 ? 1 : value;
       });
   }
@@ -142,12 +128,47 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildWithPageChange(BuildContext context, int value, Widget child) {
     return Text(
-      "颜色 $value/5",
+      "颜色 $value/${colors.length}",
       style: TextStyle(fontSize: 30, color: Colors.white),
     );
   }
 
   Widget _buildContent() {
+    // 创建色块
+    List<Widget> widgets = colors
+        .map(
+          (e) => Container(
+            decoration: BoxDecoration(
+              color: e.color,
+              borderRadius: BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+            child: Stack(
+              children: [
+                Center(
+                  child: Text(
+                    e.name,
+                    style: TextStyle(fontSize: 30.0, color: Colors.white),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Checkbox(
+                    value: e.selected,
+                    onChanged: (bool changed) {
+                      e.selected = changed;
+                      setState(() {
+
+                      });
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
+        .toList();
     return Container(
         padding: EdgeInsets.only(bottom: 80, top: 40),
         child: Column(
@@ -156,11 +177,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: PageView.builder(
                 onPageChanged: (index) => page.value = index + 1,
                 controller: _ctrl,
-                itemCount: testWidgets.length,
+                itemCount: widgets.length,
                 itemBuilder: (_, index) => AnimatedBuilder(
                     child: Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: testWidgets[index],
+                      child: widgets[index],
                     ),
                     animation: _ctrl,
                     builder: (context, child) =>
@@ -212,13 +233,24 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: IconButton(icon: Icon(Icons.flag), onPressed: (){
+          print(colors);
+        },)
+      ),
     );
   }
 }
 
 class ColorObject {
-  ColorObject({this.name, this.color});
+  ColorObject({this.name, this.color, this.selected = false});
 
-  final String name;
-  final Color color;
+  String name;
+  Color color;
+  bool selected;
+
+  @override
+  String toString() {
+    return 'ColorObject{name: $name, color: $color, selected: $selected}';
+  }
 }
